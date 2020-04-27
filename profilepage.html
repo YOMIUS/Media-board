@@ -7,7 +7,6 @@
         <a class="navbar-brand">PostIt</a>
         <div id="navbarNavAltMarkup">
           <div class="navbar-nav">
-          {% if user %}    <a class="nav-link" href="/profile">Profile</a> {% endif %}
         {% if user %}    <a class="nav-link" href="/new">Create Post</a> {% endif %}
             <a class="nav-link" href={{url}}>{{url_string}}</a>
               </div>
@@ -15,12 +14,11 @@
         </nav>
   </head>
   <body>
-    <div class="p-3 mb-2 bg-light text-dark">
-      {% if user %}
-      <p>{{ Welcome }} {{ user.email() }}</p><br/>
-      {% else %}
-      <p>Hello guest, Welcome to the application</p><br>
-      {% endif %}
-    </div>
+        {% for i in post_details %}
+      <div>
+            <img src="/display/{{ Post.get_by_id(i.id()).imagekey_blob }}" alt="">
+            <p>{{ Post.get_by_id(i.id()).caption }}</p>
+      </div>
+      {% endfor %}
   </body>
 </html>

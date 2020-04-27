@@ -1,5 +1,5 @@
 from google.appengine.ext import ndb
 
-class BlobCollection(ndb.Model):
-    filenames = ndb.StringProperty()
+class Images(ndb.Model):
+    filename = ndb.StringProperty()
     blobs = ndb.BlobKeyProperty()

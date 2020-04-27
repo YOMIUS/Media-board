@@ -7,7 +7,12 @@ from google.appengine.ext import ndb
 from google.appengine.ext import blobstore
 from myuser import MyUser
 from post import Post
-from images import BlobCollection
+from images import Images
+from updown import UploadHandler
+from updown import DownloadHandler
+from updown import ViewPhotoHandler
+from newpost import NewPost
+from profilepage import ProfilePage
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
@@ -34,6 +39,7 @@ class MainPage(webapp2.RequestHandler):
             if myuser == None:
                 Welcome = 'Welcome to the application'
                 myuser = MyUser(id=user.user_id())
+                myuser.email_address = user.email()
                 myuser.put()
         else:
             url = users.create_login_url(self.request.uri)
@@ -54,5 +60,9 @@ class MainPage(webapp2.RequestHandler):
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
+    ('/new', NewPost),
     ('/upload', UploadHandler),
+    ('/download', DownloadHandler),
+    ('/display/([^/]+)?', Display),
+    ('/profile', ProfilePage)
 ], debug=True)

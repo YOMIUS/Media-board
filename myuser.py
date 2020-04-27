@@ -1,7 +1,8 @@
 from google.appengine.ext import ndb
+from post import Post
 
 class MyUser(ndb.Model):
     email_address = ndb.StringProperty()
-    post_key = ndb.KeyProperty(Post, repeated=True)
+    postkey = ndb.KeyProperty(Post, repeated=True)
     followers = ndb.StringProperty(repeated=True)
     following = ndb.StringProperty(repeated=True)
