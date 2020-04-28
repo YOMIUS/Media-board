@@ -7,18 +7,27 @@
         <a class="navbar-brand">PostIt</a>
         <div id="navbarNavAltMarkup">
           <div class="navbar-nav">
-        {% if user %}    <a class="nav-link" href="/new">Create Post</a> {% endif %}
-            <a class="nav-link" href={{url}}>{{url_string}}</a>
+            <a class="nav-link" href="/new">Create Post</a>
+            <a class="nav-link" href="/">Home</a>
               </div>
             </div>
         </nav>
   </head>
   <body>
+    <div class="card">
+      <h1>{{ user }}</h1>
+      <a href="#"><i>Followers</i></a>{{ count1 }}
+      <a href="#"><i>Following</i></a>{{ count2 }}
+      <p><button>Contact</button></p>
+</div>
+
         {% for i in post_details %}
-      <div>
-            <img src="/display/{{ Post.get_by_id(i.id()).imagekey_blob }}" alt="">
-            <p>{{ Post.get_by_id(i.id()).caption }}</p>
-      </div>
+      <div class="card-deck" style="display: inline-block;">
+        <div class="card text-white bg-dark mb-3">
+            <img src="/display/{{i.imagekey_blob }}" alt="" width="auto" height="400px">
+            <p>{{i.caption }}</p>
+          </div>
+        </div>
       {% endfor %}
   </body>
 </html>

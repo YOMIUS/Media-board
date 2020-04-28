@@ -5,7 +5,7 @@ from google.appengine.ext import ndb
 from google.appengine.ext import blobstore
 from images import Images
 from updown import UploadHandler
-from updown import DownloadHandler
+from updown import Display
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),

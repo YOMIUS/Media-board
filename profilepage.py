@@ -15,25 +15,31 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 class ProfilePage(webapp2.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/html'
-
+        id = self.request.get('id')
         user = users.get_current_user()
-        myuser_key = ndb.Key('MyUser', user.user_id())
+        
+        myuser_key = ndb.Key('MyUser',id)
         myuser = myuser_key.get()
 
         post_details = []
 
-        current_user = MyUser.get_by_id(user.user_id()).postkey
+        current_user = myuser.postkey
 
         for i in current_user:
-            post_details.append(i)
+            new_i = Post.get_by_id(i.id())
+            post_details.append(new_i)
 
 
-        self.response.write(post_details)
-
+        # self.response.write(post_details)
+        count1 = len(myuser.followers)
+        count2 = len(myuser.following)
 
         template_values = {
+                           'user' : myuser.email_address,
                            'post_details': post_details,
-                           'Post': Post
+                           'Post': Post,
+                           'count1': count1,
+                           'count2': count2
                             # 'post' : post
         }
 
