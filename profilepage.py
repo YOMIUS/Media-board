@@ -15,11 +15,17 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 class ProfilePage(webapp2.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/html'
-        id = self.request.get('id')
+
         user = users.get_current_user()
-        
+        mainuser_key = ndb.Key('MyUser', user.user_id())
+        mainuser = mainuser_key.get()
+
+        id = self.request.get('id')
         myuser_key = ndb.Key('MyUser',id)
         myuser = myuser_key.get()
+
+        # pew = MyUser()
+
 
         post_details = []
 
@@ -34,14 +40,48 @@ class ProfilePage(webapp2.RequestHandler):
         count1 = len(myuser.followers)
         count2 = len(myuser.following)
 
+
         template_values = {
-                           'user' : myuser.email_address,
+                           'myuser' : myuser,
+                           'userr' : myuser.email_address,
                            'post_details': post_details,
+                           'user' : user,
                            'Post': Post,
                            'count1': count1,
-                           'count2': count2
+                           'count2': count2,
+                           'mainuser' : mainuser
                             # 'post' : post
         }
 
         template = JINJA_ENVIRONMENT.get_template('profilepage.html')
         self.response.write(template.render(template_values))
+
+    def post(self):
+        user = users.get_current_user()
+        id = self.request.get('id')
+        follow = self.request.get('follow')
+        unfollow = self.request.get('unfollow')
+
+        myuser_key = ndb.Key('MyUser', user.user_id())
+        myuser = myuser_key.get()
+
+        newuser_key = ndb.Key('MyUser', id)
+        newuser = newuser_key.get()
+
+        if follow == 'follow':
+            myuser.following.append(newuser.email_address)
+            newuser.followers.append(myuser.email_address)
+            myuser.put()
+            newuser.put()
+
+            self.redirect('/profile?id=' + id)
+            # self.redirect('/')
+
+        if unfollow == 'unfollow':
+            myuser.following.remove(newuser.email_address)
+            newuser.followers.remove(myuser.email_address)
+            myuser.put()
+            newuser.put()
+
+            self.redirect('/profile?id=' + id)
+            # self.redirect('/')

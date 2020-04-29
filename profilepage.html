@@ -15,11 +15,21 @@
   </head>
   <body>
     <div class="card">
-      <h1>{{ user }}</h1>
-      <a href="#"><i>Followers</i></a>{{ count1 }}
-      <a href="#"><i>Following</i></a>{{ count2 }}
-      <p><button>Contact</button></p>
-</div>
+      <h1>{{ userr }}</h1>
+      <i>Followers</i><a href="#">{{ count1 }}</a>
+      <i>Following</i><a href="#">{{ count2 }}</a>
+
+      {% if userr != user.email() and userr not in mainuser.following %}
+      <form class="" action="/profile?id={{myuser.key.id()}}" method="post">
+        <button class="btn btn-outline-success my-2 my-sm-0" name="follow" value="follow">Follow</button>
+      </form>
+
+      {% elif userr != user.email() %}
+      <form class="" action="/profile?id={{myuser.key.id()}}" method="post">
+        <button class="btn btn-outline-success my-2 my-sm-0" name="unfollow" value="unfollow">Unfollow</button>
+      </form>
+      {% endif %}
+      </div>
 
         {% for i in post_details %}
       <div class="card-deck" style="display: inline-block;">

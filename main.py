@@ -57,7 +57,6 @@ class MainPage(webapp2.RequestHandler):
             url_string = 'login'
 
             template_values = {
-                            # 'j' : user.user_id(),
                            'url' : url,
                            'url_string' : url_string,
                            'user' : user,
@@ -79,22 +78,29 @@ class MainPage(webapp2.RequestHandler):
             userr = MyUser()
             userr.email_address = self.request.get('Search')
 
-            self.response.write(userr.email_address)
+            # self.response.write(userr.email_address)
 
             if len(userr.email_address)!= 0:
                 query = MyUser.query(MyUser.email_address == userr.email_address).fetch()
 
                 template_values = {
                                    'query' : query,
-                                   # 'url' : url,
-                                   # 'url_string' : url_string,
                                    'user' : user,
-                                   'j' : id
-                                   # 'Welcome' : Welcome
+                                   # 'j' : id
                 }
                 template = JINJA_ENVIRONMENT.get_template('main.html')
                 self.response.write(template.render(template_values))
                 return
+
+        template_values = {
+                            'j' : user.user_id(),
+                           'url' : url,
+                           'url_string' : url_string,
+                           'user' : user,
+                           'Welcome' : Welcome
+        }
+        template = JINJA_ENVIRONMENT.get_template('main.html')
+        self.response.write(template.render(template_values))
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
