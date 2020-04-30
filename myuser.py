@@ -6,3 +6,4 @@ class MyUser(ndb.Model):
     postkey = ndb.KeyProperty(repeated=True)
     followers = ndb.StringProperty(repeated=True)
     following = ndb.StringProperty(repeated=True)
+    timeline = ndb.StringProperty(repeated=True)

@@ -9,10 +9,11 @@ from myuser import MyUser
 from post import Post
 from images import Images
 from updown import UploadHandler
-# from updown import DownloadHandler
 from updown import Display
 from newpost import NewPost
 from profilepage import ProfilePage
+from follow import Followers
+from follow import Following
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
@@ -32,16 +33,37 @@ class MainPage(webapp2.RequestHandler):
         if user:
             url = users.create_logout_url(self.request.uri)
             url_string = 'logout'
+            id = self.request.get('id')
 
             myuser_key = ndb.Key('MyUser', user.user_id())
             myuser = myuser_key.get()
 
+            myuser.timeline.append(user.user_id())
+
+            timeline = []
+            timeline_posts = []
+            post_details = []
+
+            for i in myuser.timeline:
+                timeline.append(i)
+
+            for i in timeline:
+                for j in MyUser.get_by_id(i).postkey:
+                    timeline_posts.append(j)
+
+            for i in timeline_posts:
+                allposts = Post.get_by_id(i.id())
+                post_details.append(allposts)
+
+
             template_values = {
-                                'j' : user.user_id(),
+                               'j' : user.user_id(),
                                'url' : url,
                                'url_string' : url_string,
                                'user' : user,
-                               'Welcome' : Welcome
+                               'Welcome' : Welcome,
+                               'timeline' : timeline,
+                               'post_details': post_details
             }
             template = JINJA_ENVIRONMENT.get_template('main.html')
             self.response.write(template.render(template_values))
@@ -106,7 +128,8 @@ app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/new', NewPost),
     ('/upload', UploadHandler),
-    # ('/download', DownloadHandler),
     ('/display/([^/]+)?', Display),
-    ('/profile', ProfilePage)
+    ('/profile', ProfilePage),
+    ('/followers', Followers),
+    ('/following', Following)
 ], debug=True)

@@ -19,13 +19,6 @@ class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
         myuser_key = ndb.Key('MyUser', user.user_id())
         myuser = myuser_key.get()
 
-        # blobinfo = blobstore.BlobInfo(upload.key())
-        # filename = blobinfo.filename
-
-        # coll_key = ndb.Key('BlobCollection', 1)
-        # collection = coll_key.get()
-        # id = self.request.get('id')
-
         image = Images()
         image.blobs = upload.key()
         image.put()
@@ -43,16 +36,6 @@ class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
         myuser.put()
 
         self.redirect('/')
-
-# class DownloadHandler(blobstore_handlers.BlobstoreDownloadHandler):
-#     def get(self):
-#         index = self.request.get('id')
-#
-#         # coll_key = ndb.Key('Images', 1)
-#         # collection = coll_key.get()
-#
-#         self.send_blob(index)
-#         self.redirect('/')
 
 class Display(blobstore_handlers.BlobstoreDownloadHandler):
     def get(self, photo_key):

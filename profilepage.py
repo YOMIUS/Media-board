@@ -24,8 +24,6 @@ class ProfilePage(webapp2.RequestHandler):
         myuser_key = ndb.Key('MyUser',id)
         myuser = myuser_key.get()
 
-        # pew = MyUser()
-
 
         post_details = []
 
@@ -71,15 +69,18 @@ class ProfilePage(webapp2.RequestHandler):
         if follow == 'follow':
             myuser.following.append(newuser.email_address)
             newuser.followers.append(myuser.email_address)
+            myuser.timeline.append(id)
             myuser.put()
             newuser.put()
 
             self.redirect('/profile?id=' + id)
+            # self.response.write(id)
             # self.redirect('/')
 
         if unfollow == 'unfollow':
             myuser.following.remove(newuser.email_address)
             newuser.followers.remove(myuser.email_address)
+            myuser.timeline.remove(id)
             myuser.put()
             newuser.put()
 
