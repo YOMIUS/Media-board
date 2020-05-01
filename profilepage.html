@@ -16,20 +16,21 @@
   <body>
     <div class="card">
       <h1>{{ userr }}</h1>
-      <i><a href="/followers">Followers</a></i>{{ count1 }}
-      <i><a href="/following">Following</a></i>{{ count2 }}
-      </div>
+      <h3><i>Followers</i></h3><h3><a href="/followers">{{ count1 }}</a></h3>
+      <h3><i>Following</i></h3><h3><a href="/following">{{ count2 }}</a></h3>
+
       <div>
       {% if userr != user.email() and userr not in mainuser.following %}
       <form class="" action="/profile?id={{myuser.key.id()}}" method="post">
         <button class="btn btn-outline-success my-2 my-sm-0" name="follow" value="follow">Follow</button>
-      </form>
+          </form>
 
       {% elif userr != user.email() %}
-      <form class="" action="/profile?id={{myuser.key.id()}}" method="post">
+      <form action="/profile?id={{myuser.key.id()}}" method="post">
         <button class="btn btn-outline-success my-2 my-sm-0" name="unfollow" value="unfollow">Unfollow</button>
-      </form>
-      {% endif %}
+          </form>
+        {% endif %}
+      </div>
     </div>
 
         {% for i in post_details %}

@@ -14,6 +14,7 @@ from newpost import NewPost
 from profilepage import ProfilePage
 from follow import Followers
 from follow import Following
+from comments import Comments
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
@@ -38,11 +39,19 @@ class MainPage(webapp2.RequestHandler):
             myuser_key = ndb.Key('MyUser', user.user_id())
             myuser = myuser_key.get()
 
+            if myuser == None:
+                Welcome = 'Welcome to the application'
+                myuser = MyUser(id=user.user_id())
+                myuser.email_address = user.email()
+                myuser.put()
+
+
             myuser.timeline.append(user.user_id())
 
             timeline = []
             timeline_posts = []
             post_details = []
+            post_com = []
 
             for i in myuser.timeline:
                 timeline.append(i)
@@ -55,7 +64,6 @@ class MainPage(webapp2.RequestHandler):
                 allposts = Post.get_by_id(i.id())
                 post_details.append(allposts)
 
-
             template_values = {
                                'j' : user.user_id(),
                                'url' : url,
@@ -63,25 +71,20 @@ class MainPage(webapp2.RequestHandler):
                                'user' : user,
                                'Welcome' : Welcome,
                                'timeline' : timeline,
-                               'post_details': post_details
+                               'post_details': post_details,
+                               'Post': Post
+                               # 'allposts' : allposts
             }
             template = JINJA_ENVIRONMENT.get_template('main.html')
             self.response.write(template.render(template_values))
 
-
-            if myuser == None:
-                Welcome = 'Welcome to the application'
-                myuser = MyUser(id=user.user_id())
-                myuser.email_address = user.email()
-                myuser.put()
         else:
             url = users.create_login_url(self.request.uri)
             url_string = 'login'
-
             template_values = {
                            'url' : url,
                            'url_string' : url_string,
-                           'user' : user,
+                           # 'user' : user,
                            'Welcome' : Welcome
             }
             template = JINJA_ENVIRONMENT.get_template('main.html')
@@ -90,11 +93,28 @@ class MainPage(webapp2.RequestHandler):
     def post(self):
         self.response.headers['Content-Type'] = 'text/html'
         search = self.request.get('button')
+        add = self.request.get('add')
+        url = users.create_login_url(self.request.uri)
 
         user = users.get_current_user()
         id = self.request.get('id')
-        # myuser_key = ndb.Key('MyUser', id)
-        # myuser = myuser_key.get()
+
+        if add == 'add':
+            myuser_key = ndb.Key('MyUser', user.user_id())
+            myuser = myuser_key.get()
+
+            PostId = int(self.request.get('PostId'))
+            post =  ndb.Key('Post', PostId).get()
+
+            newcom = Comments()
+            newcom.comment = self.request.get('comment')
+            newcom.creator = myuser.email_address
+
+            # newcom.put()
+            post.comments.append(newcom)
+            post.put()
+            self.redirect('/')
+
 
         if search == 'search':
             userr = MyUser()
@@ -108,22 +128,21 @@ class MainPage(webapp2.RequestHandler):
                 template_values = {
                                    'query' : query,
                                    'user' : user,
-                                   # 'j' : id
+                                   'search' : search
                 }
                 template = JINJA_ENVIRONMENT.get_template('main.html')
                 self.response.write(template.render(template_values))
                 return
 
-        template_values = {
-                            'j' : user.user_id(),
-                           'url' : url,
-                           'url_string' : url_string,
-                           'user' : user,
-                           'Welcome' : Welcome
-        }
-        template = JINJA_ENVIRONMENT.get_template('main.html')
-        self.response.write(template.render(template_values))
-
+            template_values = {
+                                'j' : user.user_id(),
+                               'url' : url,
+                               'url_string' : url_string,
+                               'user' : user,
+                               'Welcome' : Welcome
+            }
+            template = JINJA_ENVIRONMENT.get_template('main.html')
+            self.response.write(template.render(template_values))
 app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/new', NewPost),

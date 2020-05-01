@@ -1,5 +1,4 @@
 from google.appengine.ext import ndb
-from post import Post
 
 class MyUser(ndb.Model):
     email_address = ndb.StringProperty()

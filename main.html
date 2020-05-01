@@ -10,8 +10,9 @@
           {% if user %}    <a class="nav-link" href="/profile?id={{j}}">Profile</a> {% endif %}
         {% if user %}    <a class="nav-link" href="/new">Create Post</a> {% endif %}
             <a class="nav-link" href={{url}}>{{url_string}}</a>
+  {% if search %}<a class="nav-link" href="/">Home</a>{% endif %}
             <form class="form-inline" action="/" method="post">
-        {% if user %} <input class="form-control mr-sm-2" type="search" placeholder="Search" name="Search">
+        {% if user %} <input class="form-control mr-sm-2" type="search" placeholder="Search" name="Search" required>
               <button class="btn btn-outline-success my-2 my-sm-0" name="button" value="search">Search</button> {% endif %}
             </form>
               </div>
@@ -28,22 +29,38 @@
     </div>
 
 
-  <div class="">
+  <div>
       {% for i in query %}
                 <h2>Search Result:</h2>
                   <a href="/profile?id={{i.key.id()}}">{{ i.email_address }}</a>
               {% endfor %}
         </div>
 
+
          {% for p in post_details %}
+      <form action="/" method="post">
       <div class="col d-flex justify-content-center">
-        <div class="card text-white bg-dark mb-3">
-            <img src="/display/{{p.imagekey_blob }}" alt="" width="auto" height="500px">
+        <div class="card text-white bg-dark mb-3 w-25">
+            <img src="/display/{{p.imagekey_blob }}" alt="" width="auto" height="600px">
             <p>{{p.caption }}</p>
+            <div class="">
+              {% for j in p.comments%}
+              <table>
+                <tr>{{j.creator}}: </tr>
+                <tr>{{j.comment}}</tr>
+              </table>
+              {% endfor %}
+            </div>
+            <div>
+            <input type="hidden" name="PostId" value="{{p.key.id()}}">
+            <input class="form-control" type="text" placeholder="Enter Comment" name="comment" maxlength="200" required>
+            <button type="submit" name="add" value="add">Enter</button>
+            </div>
+
           </div>
         </div>
+        </form>
       {% endfor %}
-
 
   </body>
 </html>

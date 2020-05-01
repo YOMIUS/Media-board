@@ -16,8 +16,9 @@ class Followers(webapp2.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/html'
         user = users.get_current_user()
+        id = self.request.get('id')
 
-        myuser_key = ndb.Key('MyUser', user.user_id())
+        myuser_key = ndb.Key('MyUser', int(id))
         myuser = myuser_key.get()
 
         template_values = {
