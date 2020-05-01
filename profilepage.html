@@ -16,18 +16,18 @@
   <body>
     <div class="card">
       <h1>{{ userr }}</h1>
-      <h3><i>Followers</i></h3><h3><a href="/followers">{{ count1 }}</a></h3>
-      <h3><i>Following</i></h3><h3><a href="/following">{{ count2 }}</a></h3>
+      <h3><i>Followers</i></h3><h3><a href="/followers?id={{myuser.key.id()}}">{{ count1 }}</a></h3>
+      <h3><i>Following</i></h3><h3><a href="/following?id={{myuser.key.id()}}">{{ count2 }}</a></h3>
 
       <div>
       {% if userr != user.email() and userr not in mainuser.following %}
       <form class="" action="/profile?id={{myuser.key.id()}}" method="post">
-        <button class="btn btn-outline-success my-2 my-sm-0" name="follow" value="follow">Follow</button>
+        <button class="btn btn-success" name="follow" value="follow">Follow</button>
           </form>
 
       {% elif userr != user.email() %}
       <form action="/profile?id={{myuser.key.id()}}" method="post">
-        <button class="btn btn-outline-success my-2 my-sm-0" name="unfollow" value="unfollow">Unfollow</button>
+        <button class="btn btn-danger" name="unfollow" value="unfollow">Unfollow</button>
           </form>
         {% endif %}
       </div>

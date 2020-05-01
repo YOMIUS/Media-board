@@ -21,7 +21,7 @@ class ProfilePage(webapp2.RequestHandler):
         mainuser = mainuser_key.get()
 
         id = self.request.get('id')
-        myuser_key = ndb.Key('MyUser',id)
+        myuser_key = ndb.Key('MyUser', id)
         myuser = myuser_key.get()
 
 
