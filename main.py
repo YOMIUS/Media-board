@@ -51,7 +51,6 @@ class MainPage(webapp2.RequestHandler):
             timeline = []
             timeline_posts = []
             post_details = []
-            post_com = []
 
             for i in myuser.timeline:
                 timeline.append(i)
@@ -72,7 +71,7 @@ class MainPage(webapp2.RequestHandler):
                                'Welcome' : Welcome,
                                'timeline' : timeline,
                                'post_details': post_details,
-                               'Post': Post
+                               'Post': Post,
                                # 'allposts' : allposts
             }
             template = JINJA_ENVIRONMENT.get_template('main.html')
@@ -84,7 +83,6 @@ class MainPage(webapp2.RequestHandler):
             template_values = {
                            'url' : url,
                            'url_string' : url_string,
-                           # 'user' : user,
                            'Welcome' : Welcome
             }
             template = JINJA_ENVIRONMENT.get_template('main.html')
@@ -92,17 +90,37 @@ class MainPage(webapp2.RequestHandler):
 
     def post(self):
         self.response.headers['Content-Type'] = 'text/html'
+        user = users.get_current_user()
+        myuser_key = ndb.Key('MyUser', user.user_id())
+        myuser = myuser_key.get()
+
         search = self.request.get('button')
         add = self.request.get('add')
         url = users.create_login_url(self.request.uri)
+        url_string = 'logout'
+        Welcome = 'Welcome back'
 
-        user = users.get_current_user()
+        myuser.timeline.append(user.user_id())
+
         id = self.request.get('id')
+        timeline = []
+        timeline_posts = []
+        post_details = []
+        post_com = []
+
+        for i in myuser.timeline:
+            timeline.append(i)
+
+        for i in timeline:
+            for j in MyUser.get_by_id(i).postkey:
+                timeline_posts.append(j)
+
+        for i in timeline_posts:
+            allposts = Post.get_by_id(i.id())
+            post_details.append(allposts)
+
 
         if add == 'add':
-            myuser_key = ndb.Key('MyUser', user.user_id())
-            myuser = myuser_key.get()
-
             PostId = int(self.request.get('PostId'))
             post =  ndb.Key('Post', PostId).get()
 
@@ -110,39 +128,37 @@ class MainPage(webapp2.RequestHandler):
             newcom.comment = self.request.get('comment')
             newcom.creator = myuser.email_address
 
-            # newcom.put()
             post.comments.append(newcom)
             post.put()
             self.redirect('/')
 
 
         if search == 'search':
-            userr = MyUser()
-            userr.email_address = self.request.get('Search')
-
-            # self.response.write(userr.email_address)
-
-            if len(userr.email_address)!= 0:
-                query = MyUser.query(MyUser.email_address == userr.email_address).fetch()
-
-                template_values = {
-                                   'query' : query,
-                                   'user' : user,
-                                   'search' : search
-                }
-                template = JINJA_ENVIRONMENT.get_template('main.html')
-                self.response.write(template.render(template_values))
-                return
+            searchsult = []
+            search_que = self.request.get('Search')
+            query = MyUser.query().fetch()
+            for i in query:
+                if search_que in i.email_address:
+                    searchsult.append(i)
 
             template_values = {
-                                'j' : user.user_id(),
-                               'url' : url,
-                               'url_string' : url_string,
-                               'user' : user,
-                               'Welcome' : Welcome
+
+                              'j' : user.user_id(),
+                              'url' : url,
+                              'url_string' : url_string,
+                              'user' : user,
+                              'Welcome' : Welcome,
+                              'timeline' : timeline,
+                              'post_details': post_details,
+                              'Post': Post,
+                              'query' : searchsult,
+                              'user' : user,
+                              'search' : search,
             }
             template = JINJA_ENVIRONMENT.get_template('main.html')
             self.response.write(template.render(template_values))
+            return
+
 app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/new', NewPost),

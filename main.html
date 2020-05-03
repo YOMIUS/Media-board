@@ -11,6 +11,7 @@
         {% if user %}    <a class="nav-link" href="/new">Create Post</a> {% endif %}
             <a class="nav-link" href={{url}}>{{url_string}}</a>
   {% if search %}<a class="nav-link" href="/">Home</a>{% endif %}
+  
             <form class="form-inline" action="/" method="post">
         {% if user %} <input class="form-control mr-sm-2" type="search" placeholder="Search" name="Search" required>
               <button class="btn btn-outline-success my-2 my-sm-0" name="button" value="search">Search</button> {% endif %}
@@ -30,9 +31,9 @@
 
 
   <div>
+      {% if search %}<h2>Search Result:</h2>{% endif %}
       {% for i in query %}
-                <h2>Search Result:</h2>
-                  <a href="/profile?id={{i.key.id()}}">{{ i.email_address }}</a>
+                  <a href="/profile?id={{i.key.id()}}">{{ i.email_address }}</a><br>
               {% endfor %}
         </div>
 
@@ -40,9 +41,9 @@
          {% for p in post_details %}
       <form action="/" method="post">
       <div class="col d-flex justify-content-center">
-        <div class="card text-white bg-dark mb-3 w-25">
+        <div class="card bg-light mb-3 w-25">
             <img src="/display/{{p.imagekey_blob }}" alt="" width="auto" height="600px">
-            <p>{{p.caption }}</p>
+            <h5>{{p.caption }}</h5>
             <div class="">
               {% for j in p.comments%}
               <table>
@@ -54,7 +55,7 @@
             <div>
             <input type="hidden" name="PostId" value="{{p.key.id()}}">
             <input class="form-control" type="text" placeholder="Enter Comment" name="comment" maxlength="200" required>
-            <button type="submit" name="add" value="add">Enter</button>
+            <button class="btn btn-light" type="submit" name="add" value="add">Enter</button>
             </div>
 
           </div>
